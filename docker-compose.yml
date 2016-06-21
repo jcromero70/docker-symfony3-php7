@@ -1,5 +1,14 @@
 version: '2'
 
+volumes:
+    symfony_logs:
+        driver: local
+    symfony_cache:
+        driver: local
+    nginx_logs:
+        driver: local
+
+
 services:
     db:
         image: mysql
@@ -14,7 +23,8 @@ services:
         build: ./php-fpm
         volumes:
             - ./symfony:/var/www/symfony
-            - ./logs/symfony:/var/www/symfony/app/logs
+            - symfony_logs:/var/www/symfony/app/logs
+            - symfony_cache:/var/www/symfony/app/cache
         links:
             - db
     nginx:
@@ -26,4 +36,4 @@ services:
         volumes_from:
             - php
         volumes:
-            - ./logs/nginx/:/var/log/nginx
+            - nginx_logs:/var/log/nginx
